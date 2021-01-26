@@ -14,6 +14,10 @@ moment of pushing the initial commit to this project, and I know it's not a pure
 also the fact that the obstacles in the game make it quite tough to overcome, so that you are
 obviously lost but not precisely in paradise.
 
+## Screenshots
+
+[![Animated GIF](https://raw.githubusercontent.com/TobiasBriones/images/main/gencesk-2d/gencesk-2d-prototype-2018/lostnot-in-paradise-sample-1.gif)](https://github.com/TobiasBriones/images/tree/main/gencesk-2d)
+
 ## Contact
 
 This software: [App](https://tobiasbriones.github.io/losnot-in-paradise),
