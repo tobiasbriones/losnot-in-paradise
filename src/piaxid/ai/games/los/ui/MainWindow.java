@@ -10,8 +10,11 @@ import piaxid.ai.games.los.LOSGame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 public final class MainWindow extends JFrame {
+
+    private static final String ICON_PATH = new File("assets/icon.png").getPath();
 
     public MainWindow() {
         super("PIAXID AI GAMES - LOS Losnot in paradise");
@@ -25,6 +28,7 @@ public final class MainWindow extends JFrame {
 
     public void createUI() {
         setPreferredSize(new Dimension(LOSGame.GAME_SIZE.getWidth(), LOSGame.GAME_SIZE.getHeight()));
+        setIconImage(Toolkit.getDefaultToolkit().getImage(ICON_PATH));
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
