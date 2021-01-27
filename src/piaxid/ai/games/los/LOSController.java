@@ -15,7 +15,7 @@ import engineer.tobiasbriones.gencesk_2d_prototype_2018.models.Rect;
  *
  * @author Tobias Briones
  */
-final class LOSController {
+public final class LOSController {
 
     static final int LOS_ANIM_NORMAL = 0;
     static final int LOS_ANIM_WALK_1 = 1;
@@ -38,7 +38,7 @@ final class LOSController {
     private int jumpSpeedY;
     private boolean isFalling; // Used when los fell off an abyss
 
-    LOSController(int sceneWidth) {
+    public LOSController(int sceneWidth) {
         this.sceneWidth = sceneWidth;
         reset();
     }
@@ -59,7 +59,7 @@ final class LOSController {
         return isFalling;
     }
 
-    void reset() {
+    public void reset() {
         this.losRect = null;
         this.groundTop = -1;
         this.losAnimNumber = LOS_ANIM_NORMAL;
@@ -70,7 +70,7 @@ final class LOSController {
         this.isFalling = false;
     }
 
-    void initController(Bounds losBounds, int groundTop) {
+    public void initController(Bounds losBounds, int groundTop) {
         this.losRect = losBounds.getRect();
         this.groundTop = groundTop;
         this.lastLOSAnim = System.currentTimeMillis();

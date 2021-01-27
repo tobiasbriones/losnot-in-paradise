@@ -9,11 +9,11 @@ package piaxid.ai.games.los;
 import engineer.tobiasbriones.gencesk_2d_prototype_2018.graphics.Bitmap;
 import engineer.tobiasbriones.gencesk_2d_prototype_2018.models.Rect;
 
-final class Obstacle {
+public final class Obstacle {
 
     private static final int DEF_ANIMATION_CHANGE_TIME_MS = 200;
 
-    enum Object { ABYSS1, ABYSS2, TREE1, TREE2, BIRD, LAVA }
+    public enum Object { ABYSS1, ABYSS2, TREE1, TREE2, BIRD, LAVA }
 
     private final int speedX;
     private final int speedY;

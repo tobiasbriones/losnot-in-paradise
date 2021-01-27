@@ -7,12 +7,14 @@
 package piaxid.ai.games.los;
 
 import engineer.tobiasbriones.gencesk_2d_prototype_2018.Scene;
-import engineer.tobiasbriones.gencesk_2d_prototype_2018.audio.Sound;
 import engineer.tobiasbriones.gencesk_2d_prototype_2018.graphics.Bitmap;
-import engineer.tobiasbriones.gencesk_2d_prototype_2018.io.Key;
-import engineer.tobiasbriones.gencesk_2d_prototype_2018.io.KeyEventHandler;
 import engineer.tobiasbriones.gencesk_2d_prototype_2018.models.Dimension2D;
 import engineer.tobiasbriones.gencesk_2d_prototype_2018.models.Rect;
+import piaxid.ai.games.los.ai.Algorithm;
+import piaxid.ai.games.los.ai.ga.GeneticAlgorithm;
+import piaxid.ai.games.los.ai.ga.Individual;
+import piaxid.ai.games.los.ai.ga.LOSObstacle;
+import piaxid.ai.games.los.ai.ga.SpaceObserver;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -21,25 +23,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Random;
+import java.util.List;
 
-/**
- * Implements the game scene. It takes care of loading, updating and composing
- * the virtual frame buffer by using the Gencesk 2D library.
- *
- * @author Tobias Briones
- */
-final class MainScene extends Scene {
+public final class MainScene extends Scene implements SpaceObserver {
 
-    @SuppressWarnings("unused")
     public static final int SCENE_LENGTH_TX = 12600;
     private static final int WORLD_INITIAL_SPEED_X_PIXELS_PER_SECOND = -200;
     private final Dimension2D size;
+    private final Bitmap los;
+    private final Algorithm algorithm;
     private final Bitmap background;
     private final Bitmap ground;
     private final Bitmap abyss1;
     private final Bitmap abyss2;
-    private final Bitmap los;
     private final Bitmap losWalk1;
     private final Bitmap losWalk2;
     private final Bitmap tree1;
@@ -54,24 +50,23 @@ final class MainScene extends Scene {
     private final Bitmap spacecraft;
     private final Bitmap lostScreen;
     private final Bitmap wonScreen;
-    private final Sound jumpSound;
+    /*private final Sound jumpSound;
     private final Sound fallSound1;
     private final Sound fallSound2;
     private final Sound hurtSound1;
-    private final Sound hurtSound2;
+    private final Sound hurtSound2;*/
     private final Font g2Font;
     private final LinkedList<Integer> obstaclesPosition;
     private final LinkedList<Obstacle.Object> obstacles;
-    private final LinkedList<Obstacle> visibleObstacles;
-    private final KeyEventHandler keyHandler;
-    private final LOSController losController;
-    private final WinAnimation victory;
+    private final List<Obstacle> visibleObstacles;
+    //private final KeyEventHandler keyHandler;
+    //private final WinAnimation victory;
     private final int offY;
-    private final boolean drawObjectFrame;
     private int cameraSpeed;
     private int cameraTotalTx;
     private int numberOfDrawnObstacles;
     private boolean updateCameraSpeed;
+    private final boolean drawObjectFrame;
     private boolean gameWon;
     private int lastFPSCount;
     private long fpsCountLastUpdate;
@@ -80,11 +75,12 @@ final class MainScene extends Scene {
     MainScene(LOSGame game) throws IOException, LineUnavailableException, UnsupportedAudioFileException {
         super(game);
         this.size = game.getGameConfig().getResolution();
+        this.los = Bitmap.createBitmap(new File("assets/los.png"));
+        this.algorithm = getNewAlgorithm();
         this.background = Bitmap.createBitmap(new File("assets/background.png"));
         this.ground = Bitmap.createBitmap(new File("assets/ground.png"));
         this.abyss1 = Bitmap.createBitmap(new File("assets/abyss_1.png"));
         this.abyss2 = Bitmap.createBitmap(new File("assets/abyss_2.png"));
-        this.los = Bitmap.createBitmap(new File("assets/los.png"));
         this.losWalk1 = Bitmap.createBitmap(new File("assets/los_walk_1.png"));
         this.losWalk2 = Bitmap.createBitmap(new File("assets/los_walk_2.png"));
         this.tree1 = Bitmap.createBitmap(new File("assets/tree_1.png"));
@@ -99,24 +95,23 @@ final class MainScene extends Scene {
         this.spacecraft = Bitmap.createBitmap(new File("assets/spacecraft.png"));
         this.lostScreen = Bitmap.createBitmap(new File("assets/game_lost.png"));
         this.wonScreen = Bitmap.createBitmap(new File("assets/game_won.png"));
-        this.jumpSound = new Sound(new File("assets/jump.wav"));
+        /*this.jumpSound = new Sound(new File("assets/jump.wav"));
         this.fallSound1 = new Sound(new File("assets/fall_1.wav"));
         this.fallSound2 = new Sound(new File("assets/fall_2.wav"));
         this.hurtSound1 = new Sound(new File("assets/hurt_1.wav"));
-        this.hurtSound2 = new Sound(new File("assets/hurt_2.wav"));
+        this.hurtSound2 = new Sound(new File("assets/hurt_2.wav"));*/
         this.g2Font = new Font("Monospaced", Font.BOLD, 32);
         this.obstaclesPosition = new LinkedList<>();
         this.obstacles = new LinkedList<>();
         this.visibleObstacles = new LinkedList<>();
-        this.keyHandler = game.getKeyHandler();
-        this.losController = new LOSController(size.getWidth());
-        this.victory = new WinAnimation(this, spacecraft, los.getRect());
+        //this.keyHandler = game.getKeyHandler();
+        //this.victory = new WinAnimation(this, spacecraft, los.getRect());
         this.offY = 30;
         this.cameraSpeed = WORLD_INITIAL_SPEED_X_PIXELS_PER_SECOND;
         this.cameraTotalTx = 0;
         this.numberOfDrawnObstacles = 0;
         this.updateCameraSpeed = false;
-        this.drawObjectFrame = false;
+        this.drawObjectFrame = true;
         this.gameLost = false;
         this.gameWon = false;
         this.lastFPSCount = 0;
@@ -124,16 +119,49 @@ final class MainScene extends Scene {
 
         setObstacles();
         setObjects();
+        setAlgorithm();
+    }
+
+    private Algorithm getNewAlgorithm() {
+        return new GeneticAlgorithm(size, new Dimension2D(los.getWidth(), los.getHeight()), this);
+    }
+
+    @Override
+    public int getCurrentTx() {
+        return Math.abs(cameraTotalTx);
+    }
+
+    @Override
+    public LOSObstacle[] getCurrentObstacles() {
+        final LOSObstacle[] obstacles = new LOSObstacle[visibleObstacles.size()];
+        final int i = 0;
+
+        for (Obstacle obstacle : visibleObstacles) {
+            obstacles[i] = new LOSObstacle(obstacle.getObject(), getObstacleDistance(obstacle));
+        }
+        return obstacles;
     }
 
     @Override
     protected void update(long l) {
-        if (gameLost || gameWon) {
+        /*if(gameLost || gameWon) {
             keyHandler.retrieve(key -> {
-                if (key.getCharacter() == Key.KEY_ENTER) {
+                if(key.getCharacter() == Key.KEY_ENTER) {
                     restart();
+
                 }
+
             });
+            return;
+
+        }*/
+        if (gameLost || gameWon) {
+            return;
+        }
+        if (!algorithm.isRunning()) {
+            algorithm.run();
+        }
+        if (!algorithm.isPlaying()) {
             return;
         }
         final Iterator<Obstacle> visibleObstaclesIterator = visibleObstacles.iterator();
@@ -151,8 +179,8 @@ final class MainScene extends Scene {
         }
 
         // Retrieve key events
-        keyHandler.retrieve(key -> {
-            switch (key.getCharacter()) {
+        /*keyHandler.retrieve(key -> {
+            switch(key.getCharacter()) {
                 case 'a':
                     losController.walkBack(l);
                     break;
@@ -162,63 +190,36 @@ final class MainScene extends Scene {
                     break;
 
                 case ' ':
-                    if (!losController.isJumping() && !losController.isFalling()) {
+                    if(!losController.isJumping() && !losController.isFalling()) {
                         jumpSound.play();
+
                     }
                     losController.jump(LOSController.JUMP_UP);
                     break;
 
                 case 'q':
-                    if (!losController.isJumping()) {
+                    if(!losController.isJumping()) {
                         jumpSound.play();
+
                     }
                     losController.jump(LOSController.JUMP_UP_LEFT);
                     break;
 
                 case 'e':
-                    if (!losController.isJumping()) {
+                    if(!losController.isJumping()) {
                         jumpSound.play();
+
                     }
                     losController.jump(LOSController.JUMP_UP_RIGHT);
                     break;
+
             }
-        });
-        losController.now(l, tx);
+
+        });*/
 
         // Handle obstacles
         while (visibleObstaclesIterator.hasNext()) {
             final Obstacle obstacle = visibleObstaclesIterator.next();
-
-            // Object collide
-            if (obstacle.getObject() == Obstacle.Object.ABYSS1 || obstacle.getObject() == Obstacle.Object.ABYSS2) {
-                if (!losController.isJumping() && los.getRect().isAbove(obstacle.getRect())) {
-                    losController.fall();
-                    lost();
-                    if (!fallSound1.isPlaying() && !fallSound2.isPlaying()) {
-                        final Random random = new Random();
-
-                        if (random.nextBoolean()) {
-                            fallSound1.play();
-                        }
-                        else {
-                            fallSound2.play();
-                        }
-                    }
-                }
-            }
-            else if (los.getRect().overlapsRect(obstacle.getRect())) {
-                lost();
-                if (!hurtSound1.isPlaying() && !hurtSound2.isPlaying()) {
-                    final Random random = new Random();
-
-                    if (random.nextBoolean()) {
-                        hurtSound1.play();
-                    }
-                    else {
-                        hurtSound2.play();
-                    }
-                }
-            }
 
             // Move camera
             obstacle.getRect().translateX(tx);
@@ -256,10 +257,17 @@ final class MainScene extends Scene {
                 visibleObstaclesIterator.remove();
 
                 // Check if game is done
-                if (!victory.isRunning() && obstaclesPosition.isEmpty()) {
-                    victory.start(cameraSpeed);
-                }
+                /*if(!victory.isRunning() && obstaclesPosition.isEmpty()) {
+                     victory.start(cameraSpeed);
+
+                 }*/
+
             }
+        }
+
+        // Algorithm
+        if (algorithm instanceof GeneticAlgorithm) {
+            gaTick(l, tx);
         }
 
         // Check for adding new visible obstacles
@@ -271,7 +279,7 @@ final class MainScene extends Scene {
         }
 
         // If game has been won victory will update
-        victory.now(l);
+        //victory.now(l);
 
         // Update camera speed
         if (updateCameraSpeed) {
@@ -286,50 +294,180 @@ final class MainScene extends Scene {
         ground.draw(graphics2D);
 
         // Obstacles
-        for (Obstacle obstacle : visibleObstacles) {
-            obstacle.getAnimation().draw(graphics2D);
-            drawFrame(graphics2D, obstacle.getRect());
+        if (!gameLost) {
+            for (Obstacle obstacle : visibleObstacles) {
+                obstacle.getAnimation().draw(graphics2D);
+                drawFrame(graphics2D, obstacle.getRect());
+            }
         }
 
-        // Los
-        switch (losController.getLOSAnim()) {
-            case LOSController.LOS_ANIM_NORMAL:
-                los.draw(graphics2D);
-                break;
+        // Population (GA)
+        if (algorithm instanceof GeneticAlgorithm) {
+            final Individual[] population = ((GeneticAlgorithm) algorithm).getPopulation();
+            int currentAnim;
+            int currentTop;
+            int currentLeft;
 
-            case LOSController.LOS_ANIM_WALK_1:
-                losWalk1.getRect().set(los.getRect().getTop(), los.getRect().getLeft());
-                losWalk1.draw(graphics2D);
-                break;
+            for (Individual individual : population) {
+                if (!individual.isVisible()) {
+                    continue;
+                }
+                currentAnim = individual.getLosController().getLOSAnim();
+                currentTop = individual.getRect().getTop();
+                currentLeft = individual.getRect().getLeft();
 
-            case LOSController.LOS_ANIM_WALK_2:
-                losWalk2.getRect().set(los.getRect().getTop(), los.getRect().getLeft());
-                losWalk2.draw(graphics2D);
-                break;
+                switch (currentAnim) {
+                    case LOSController.LOS_ANIM_NORMAL:
+                        los.getRect().set(currentTop, currentLeft);
+                        los.draw(graphics2D);
+                        break;
+
+                    case LOSController.LOS_ANIM_WALK_1:
+                        losWalk1.getRect().set(currentTop, currentLeft);
+                        losWalk1.draw(graphics2D);
+                        break;
+
+                    case LOSController.LOS_ANIM_WALK_2:
+                        losWalk2.getRect().set(currentTop, currentLeft);
+                        losWalk2.draw(graphics2D);
+                        break;
+                }
+                if (individual.getScoreRank() == 1) {
+                    graphics2D.setColor(Color.decode("#0277BD"));
+                }
+                else if (individual.getScoreRank() == 2) {
+                    graphics2D.setColor(Color.decode("#6A1B9A"));
+                }
+                else {
+                    graphics2D.setColor(Color.YELLOW);
+                }
+                drawFrame(graphics2D, individual.getRect());
+            }
         }
-        drawFrame(graphics2D, los.getRect());
 
         // Game lost/won
         if (gameLost) {
             lostScreen.draw(graphics2D);
         }
-        else if (victory.isRunning()) {
+        /*else if(victory.isRunning()) {
             spacecraft.draw(graphics2D);
 
-            if (gameWon) {
+            if(gameWon) {
                 wonScreen.draw(graphics2D);
+
             }
-        }
+
+        }*/
 
         // FPS Count
         graphics2D.setColor(Color.YELLOW);
         graphics2D.setFont(g2Font);
         graphics2D.drawString(String.valueOf(lastFPSCount), 20, 40);
+
+        // Algorithm
+        algorithm.draw(graphics2D);
     }
 
     // Called from WinAnimation when won animation is done and then finishes the game
     void won() {
         gameWon = true;
+    }
+
+    private void gaTick(long l, int tx) {
+        final GeneticAlgorithm ga = (GeneticAlgorithm) algorithm;
+        final Individual[] population = ga.getPopulation();
+
+        for (Individual individual : population) {
+            //System.out.println(individual.isVisible());
+            if (!individual.isVisible()) {
+                continue;
+            }
+            final LOSController losController = individual.getLosController();
+
+            // Set tx traveled by this individual
+            individual.setTx(Math.abs(cameraTotalTx));
+
+            // Receive AI key events
+            individual.getInput().retrieveEvents().forEach((action) -> {
+                switch (action) {
+                    case 'a':
+                        losController.walkBack(l);
+                        break;
+
+                    case 'd':
+                        losController.walkForward(l);
+                        break;
+
+                    case ' ':
+                        /*if(!losController.isJumping() && !losController.isFalling()) {
+                            jumpSound.play();
+
+                        }*/
+                        losController.jump(LOSController.JUMP_UP);
+                        break;
+
+                    case 'q':
+                        /*if(!losController.isJumping()) {
+                            jumpSound.play();
+
+                        }*/
+                        losController.jump(LOSController.JUMP_UP_LEFT);
+                        break;
+
+                    case 'e':
+                        /*if(!losController.isJumping()) {
+                            jumpSound.play();
+
+                        }*/
+                        losController.jump(LOSController.JUMP_UP_RIGHT);
+                        break;
+                }
+            });
+
+            // Update current Los controller
+            losController.now(l, tx);
+
+            // Object collide
+            for (Obstacle obstacle : visibleObstacles) {
+                if (obstacle.getObject() == Obstacle.Object.ABYSS1 || obstacle.getObject() == Obstacle.Object.ABYSS2) {
+                    if (!losController.isJumping() && individual.getRect().isAbove(obstacle.getRect())) {
+                        losController.fall();
+                        lost(individual);
+                        /*if(!fallSound1.isPlaying() && !fallSound2.isPlaying()) {
+                            final Random random = new Random();
+
+                            if(random.nextBoolean()) {
+                                fallSound1.play();
+
+                            } else {
+                                fallSound2.play();
+
+                            }
+
+                        }*/
+
+                    }
+                }
+                else if (individual.getRect().overlapsRect(obstacle.getRect())) {
+                    lost(individual);
+                    /*if(!hurtSound1.isPlaying() && !hurtSound2.isPlaying()) {
+                        final Random random = new Random();
+
+                        if(random.nextBoolean()) {
+                            hurtSound1.play();
+
+                        } else {
+                            hurtSound2.play();
+
+                        }
+
+                    }*/
+
+                }
+            }
+        }
+        //System.out.println("-------");
+
     }
 
     private void setObstacles() {
@@ -396,13 +534,20 @@ final class MainScene extends Scene {
     }
 
     private void setObjects() {
-        ground.getRect().set(0, 0, ground.getWidth(), ground.getHeight());
+        ground.getRect().set(0, 0);
         ground.getRect().translateY(size.getHeight() - offY - ground.getHeight());
-        losController.initController(los.getBounds(), ground.getRect().getTop());
-        victory.init(size.getWidth());
+
+        //victory.init(size.getWidth());
 
         // Register initial visible obstacles
         addObstacle(createObstacle(obstacles.pop()), size.getWidth() - 350);
+    }
+
+    private void setAlgorithm() {
+        if (algorithm instanceof GeneticAlgorithm) {
+            // Init GA
+            ((GeneticAlgorithm) algorithm).nextGeneration(ground.getRect().getTop());
+        }
     }
 
     private Obstacle createObstacle(Obstacle.Object object) {
@@ -486,6 +631,15 @@ final class MainScene extends Scene {
         g2.drawLine(rect.getRight(), rect.getTop(), rect.getRight(), rect.getBottom());
     }
 
+    private int getObstacleDistance(Obstacle obstacle) {
+        int distance = obstacle.getRect().getLeft() - los.getRect().getRight();
+
+        if (distance < 0) {
+            distance = 0;
+        }
+        return distance;
+    }
+
     private void restart() {
         cameraSpeed = WORLD_INITIAL_SPEED_X_PIXELS_PER_SECOND;
         cameraTotalTx = 0;
@@ -496,28 +650,59 @@ final class MainScene extends Scene {
         lastFPSCount = 0;
         fpsCountLastUpdate = System.currentTimeMillis();
 
-        victory.end();
+        //victory.end();
         visibleObstacles.clear();
         obstacles.clear();
         obstaclesPosition.clear();
-        losController.reset();
         setObstacles();
         setObjects();
+        setAlgorithm();
+        algorithm.resume();
     }
 
-    private void lost() {
-        if (losController.isFalling()) {
-            new Thread(() -> {
-                try {
-                    Thread.sleep(800);
+    private void startRestarting() {
+        algorithm.pause();
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+            }
+            catch (InterruptedException ignore) {
+            }
+            restart();
+        }).start();
+    }
+
+    private void lost(Individual individual) {
+        if (algorithm instanceof GeneticAlgorithm) {
+            final GeneticAlgorithm ga = (GeneticAlgorithm) algorithm;
+
+            ga.setLost(individual);
+            if (individual.getLosController().isFalling()) {
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(800);
+                    }
+                    catch (InterruptedException ignore) {
+                    }
+                    synchronized (ga) {
+                        ga.setNotVisible(individual);
+
+                        if (ga.getNotVisiblePopulation() >= GeneticAlgorithm.POPULATION_SIZE) {
+                            gameLost = true;
+
+                            startRestarting();
+                        }
+                    }
+                }).start();
+            }
+            else {
+                ga.setNotVisible(individual);
+                if (ga.getNotVisiblePopulation() >= GeneticAlgorithm.POPULATION_SIZE) {
+                    gameLost = true;
+
+                    startRestarting();
                 }
-                catch (InterruptedException ignore) {
-                }
-                gameLost = true;
-            }).start();
-        }
-        else {
-            gameLost = true;
+            }
         }
     }
 
