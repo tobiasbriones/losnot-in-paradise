@@ -17,6 +17,9 @@ obviously lost but not precisely in paradise.
 The third party game assets (audios) are missing yet. I just need to put the resource licenses and
 links into a NOTICE file and then add the files for the project to be able to run successfully.
 
+Check out the [ai branch](https://github.com/TobiasBriones/losnot-in-paradise/tree/ai) for the
+algorithm that I had in mind for this game.
+
 ## Screenshots
 
 [![Animated GIF](https://raw.githubusercontent.com/TobiasBriones/images/main/gencesk-2d/gencesk-2d-prototype-2018/lostnot-in-paradise-sample-1.gif)](https://github.com/TobiasBriones/images/tree/main/gencesk-2d)
