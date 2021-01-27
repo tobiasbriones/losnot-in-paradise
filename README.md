@@ -17,6 +17,8 @@ obviously lost but not precisely in paradise.
 The third party game assets (audios) are missing yet. I just need to put the resource licenses and
 links into a NOTICE file and then add the files for the project to be able to run successfully.
 
+There is some documentation to add to the Algorithm. I have modified the algorithm since I created it, and I am uncertain about its functionality because I think I should use a neural network instead of a genetic algorithm. So, in the future when I continue to study AI and ML I will enhance all of this and add the proper documentation. I've also wanted to make a good video about the game, and the algorithms which are something I really want to achieve pretty well.
+
 ## Screenshots
 
 [![Animated GIF](https://raw.githubusercontent.com/TobiasBriones/images/main/gencesk-2d/gencesk-2d-prototype-2018/lostnot-in-paradise-sample-1.gif)](https://github.com/TobiasBriones/images/tree/main/gencesk-2d)
