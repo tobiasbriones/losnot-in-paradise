@@ -18,6 +18,11 @@ obviously lost but not precisely in paradise.
 
 [![Animated GIF](https://raw.githubusercontent.com/TobiasBriones/images/main/gencesk-2d/gencesk-2d-prototype-2018/lostnot-in-paradise-sample-1.gif)](https://github.com/TobiasBriones/images/tree/main/gencesk-2d)
 
+---
+
+**AI playing Losnot in paradise**
+![AI Animated GIF](./docs/ai-screenshot-1.png)
+
 ## Contact
 
 This software: [App](https://tobiasbriones.github.io/losnot-in-paradise),
