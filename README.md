@@ -14,9 +14,6 @@ moment of pushing the initial commit to this project, and I know it's not a pure
 also the fact that the obstacles in the game make it quite tough to overcome, so that you are
 obviously lost but not precisely in paradise.
 
-The third party game assets (audios) are missing yet. I just need to put the resource licenses and
-links into a NOTICE file and then add the files for the project to be able to run successfully.
-
 Check out the [ai branch](https://github.com/TobiasBriones/losnot-in-paradise/tree/ai) for the
 algorithm that I had in mind for this game.
 
@@ -39,3 +36,7 @@ Losnot in paradise is a 2D video game made in Java where the main character --Lo
 strange world full of obstacles, and his mission is to get out of that place alive.
 
 Copyright © 2018-2021 Tobias Briones. All rights reserved.
+
+### License
+
+This software is licensed under the [BSD-3-Clause License](./LICENSE).
