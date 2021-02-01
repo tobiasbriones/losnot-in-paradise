@@ -14,10 +14,11 @@ moment of pushing the initial commit to this project, and I know it's not a pure
 also the fact that the obstacles in the game make it quite tough to overcome, so that you are
 obviously lost but not precisely in paradise.
 
-The third party game assets (audios) are missing yet. I just need to put the resource licenses and
-links into a NOTICE file and then add the files for the project to be able to run successfully.
-
-There is some documentation to add to the Algorithm. I have modified the algorithm since I created it, and I am uncertain about its functionality because I think I should use a neural network instead of a genetic algorithm. So, in the future when I continue to study AI and ML I will enhance all of this and add the proper documentation. I've also wanted to make a good video about the game, and the algorithms which are something I really want to achieve pretty well.
+There is some documentation to add to the Algorithm. I have modified the algorithm since I created
+it, and I am uncertain about its functionality because I think I should use a neural network instead
+of a genetic algorithm. So, in the future when I continue to study AI and ML I will enhance all of
+this and add the proper documentation. I've also wanted to make a good video about the game, and the
+algorithms which are something I really want to achieve pretty well.
 
 ## Screenshots
 
@@ -43,3 +44,7 @@ Losnot in paradise is a 2D video game made in Java where the main character --Lo
 strange world full of obstacles, and his mission is to get out of that place alive.
 
 Copyright © 2018-2021 Tobias Briones. All rights reserved.
+
+### License
+
+This software is licensed under the [BSD-3-Clause License](./LICENSE).
