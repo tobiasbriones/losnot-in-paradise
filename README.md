@@ -40,3 +40,8 @@ Copyright © 2018-2021 Tobias Briones. All rights reserved.
 ### License
 
 This software is licensed under the [BSD-3-Clause License](./LICENSE).
+
+---
+
+This project includes sounds from https://freesound.org/, see the
+[NOTICE](./NOTICE) file for more details. 
