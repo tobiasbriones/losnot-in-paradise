@@ -1,3 +1,34 @@
 Losnot in Paradise
 Copyright (c) 2018-2021 Tobias Briones. All rights reserved.
 Licensed under the BSD-3-Clause License.
+
+--------------------------------------------------------------------------------
+
+This project includes sounds provided by freesound.org (https://freesound.org/),
+located at the root of the ./assets directory. The following sounds are CC0-1.0
+licensed. The complete list of sounds is listed next:
+
+- fall_1.wav
+  from https://freesound.org/people/Breviceps/sounds/449955/
+  by   https://freesound.org/people/Breviceps/
+  Licensed under the CC0-1.0 License.
+
+- fall_2.wav
+  from https://freesound.org/people/cinevid/sounds/144160/
+  by   https://freesound.org/people/cinevid/
+  Licensed under the CC0-1.0 License.
+
+- hurt_1.wav
+  from https://freesound.org/people/Christopherderp/sounds/342230/
+  by   https://freesound.org/people/Christopherderp/
+  Licensed under the CC0-1.0 License.
+
+- hurt_2.wav
+  from https://freesound.org/people/Christopherderp/sounds/342231/
+  by   https://freesound.org/people/Christopherderp/
+  Licensed under the CC0-1.0 License.
+
+- jump.wav
+  from https://freesound.org/people/BehanSean/sounds/422426/
+  by   https://freesound.org/people/BehanSean/
+  Licensed under the CC0-1.0 License.
