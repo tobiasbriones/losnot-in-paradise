@@ -29,18 +29,20 @@ import javax.swing.*;
  */
 public final class LOSGame extends Game {
 
-    public static final Dimension2D GAME_SIZE = new Dimension2D(960, 540);
+    private static final int GAME_FPS = 60;
+    public static final Dimension2D gameSize = new Dimension2D(960, 540);
     private final GameConfig gameConfig;
     private KeyEventHandler keyHandler;
     private Scene currentScene;
 
     public LOSGame() {
+        super();
         this.gameConfig = new GameConfig();
         this.keyHandler = null;
         this.currentScene = null;
 
-        gameConfig.setResolution(GAME_SIZE.getWidth(), GAME_SIZE.getHeight());
-        //gameConfig.setFps(20);
+        gameConfig.setResolution(gameSize.getWidth(), gameSize.getHeight());
+        gameConfig.setFps(GAME_FPS);
     }
 
     KeyEventHandler getKeyHandler() {
@@ -59,7 +61,7 @@ public final class LOSGame extends Game {
 
     @Override
     protected RenderView onCreateRenderView(RenderViewTickCallback renderViewTickCallback) {
-        final RenderView renderView = new RenderView(renderViewTickCallback, gameConfig);
+        final var renderView = new RenderView(renderViewTickCallback, gameConfig);
         keyHandler = new KeyEventHandler(renderView);
         return renderView;
     }

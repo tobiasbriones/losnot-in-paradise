@@ -27,10 +27,10 @@ final class Obstacle {
     private final Bitmap[] animations;
     private final Rect rect;
     private int i;
-    private int animationTimeMS;
+    private int animationTimeMs;
     private boolean sinVertical;
     private float sinValue;
-    private int animationChangeTimeMS;
+    private int animationChangeTimeMs;
 
     Obstacle(int speedX, int speedY, Object object, Bitmap... animations) {
         this.speedX = speedX;
@@ -39,10 +39,11 @@ final class Obstacle {
         this.animations = animations;
         this.rect = new Rect(0, 0, animations[0].getWidth(), animations[0].getHeight());
         this.i = 0;
-        this.animationTimeMS = 0;
+        this.animationTimeMs = 0;
         this.sinVertical = false;
-        this.sinValue = 0;
-        this.animationTimeMS = DEF_ANIMATION_CHANGE_TIME_MS;
+        this.sinValue = 0.0f;
+        this.animationTimeMs = DEF_ANIMATION_CHANGE_TIME_MS;
+        this.animationChangeTimeMs = 0;
     }
 
     Obstacle(Object object, Bitmap... animations) {
@@ -76,8 +77,8 @@ final class Obstacle {
         return rect;
     }
 
-    void setAnimationChangeTime(int timeMS) {
-        this.animationChangeTimeMS = timeMS;
+    void setAnimationChangeTime(int value) {
+        animationChangeTimeMs = value;
     }
 
     void setPosition(int top, int left) {
@@ -91,7 +92,7 @@ final class Obstacle {
     void now(long tickMS) {
         int tx = (int) (speedX * (tickMS / 1000.0F));
         int ty = (int) (speedY * (tickMS / 1000.0F));
-        animationTimeMS += tickMS;
+        animationTimeMs += tickMS;
 
         if (tx == 0 && speedX != 0) {
             tx = speedX / Math.abs(speedX);
@@ -104,9 +105,9 @@ final class Obstacle {
 
             ty = (int) (Math.sin(sinValue) * speedY);
         }
-        if (animationTimeMS >= animationChangeTimeMS) {
+        if (animationTimeMs >= animationChangeTimeMs) {
             i++;
-            animationTimeMS = 0;
+            animationTimeMs = 0;
         }
         if (i >= animations.length) {
             i = 0;

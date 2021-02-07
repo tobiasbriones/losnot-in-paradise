@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -68,7 +69,7 @@ final class MainScene extends Scene {
     private final Font g2Font;
     private final LinkedList<Integer> obstaclesPosition;
     private final LinkedList<Obstacle.Object> obstacles;
-    private final LinkedList<Obstacle> visibleObstacles;
+    private final List<Obstacle> visibleObstacles;
     private final KeyEventHandler keyHandler;
     private final LOSController losController;
     private final WinAnimation victory;

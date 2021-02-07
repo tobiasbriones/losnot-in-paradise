@@ -33,7 +33,7 @@ public final class MainWindow extends JFrame {
     }
 
     public void createUI() {
-        setPreferredSize(new Dimension(LOSGame.GAME_SIZE.getWidth(), LOSGame.GAME_SIZE.getHeight()));
+        setPreferredSize(new Dimension(LOSGame.gameSize.getWidth(), LOSGame.gameSize.getHeight()));
         setIconImage(Toolkit.getDefaultToolkit().getImage(ICON_PATH));
         pack();
         setLocationRelativeTo(null);

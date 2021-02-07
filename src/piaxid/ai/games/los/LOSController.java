@@ -30,10 +30,11 @@ final class LOSController {
     static final int JUMP_UP_LEFT = 11;
     static final int JUMP_UP_RIGHT = 12;
     private static final int LOS_ANIM_CHANGE_MS = 100;
-    private static final int LOS_WALKING_SPEED_PIXELS_S = 350;
-    private static final int LOS_JUMPING_INITIAL_SPEED_X_PIXELS = 220;
-    private static final int LOS_JUMPING_INITIAL_SPEED_Y_PIXELS = -650; // Towards up is negative
-    private static final int INITIAL_LOS_LEFT = 200;
+    private static final int LOS_WALKING_SPEED_PX_S = 350;
+    private static final int LOS_JUMPING_INITIAL_SPEED_X_PX = 220;
+    private static final int LOS_JUMPING_INITIAL_SPEED_Y_PX = -650; // Towards up is negative
+    private static final int ESTIMATED_LOS_WIDTH_PADDING_PX = 30;
+    private static final int INITIAL_LOS_LEFT_PX = 200;
     private final int sceneWidth;
     private Rect losRect;
     private int groundTop;
@@ -42,15 +43,11 @@ final class LOSController {
     private boolean isJumping;
     private int jumpSpeedX;
     private int jumpSpeedY;
-    private boolean isFalling; // Used when los fell off an abyss
+    private boolean isFalling; // Used when Los fell off an abyss
 
     LOSController(int sceneWidth) {
         this.sceneWidth = sceneWidth;
         reset();
-    }
-
-    private boolean isAnimChangeNeeded() {
-        return System.currentTimeMillis() - lastLOSAnim >= LOS_ANIM_CHANGE_MS;
     }
 
     int getLOSAnim() {
@@ -65,46 +62,46 @@ final class LOSController {
         return isFalling;
     }
 
-    void reset() {
-        this.losRect = null;
-        this.groundTop = -1;
-        this.losAnimNumber = LOS_ANIM_NORMAL;
-        this.lastLOSAnim = -1;
-        this.isJumping = false;
-        this.jumpSpeedX = 0;
-        this.jumpSpeedY = 0;
-        this.isFalling = false;
-    }
-
-    void initController(Bounds losBounds, int groundTop) {
+    void initController(Bounds losBounds, int initialGroundTop) {
         this.losRect = losBounds.getRect();
-        this.groundTop = groundTop;
+        this.groundTop = initialGroundTop;
         this.lastLOSAnim = System.currentTimeMillis();
         this.losAnimNumber = LOS_ANIM_NORMAL;
         this.jumpSpeedX = 0;
         this.jumpSpeedY = 0;
 
-        putOnGround(INITIAL_LOS_LEFT);
+        placeOnGround(INITIAL_LOS_LEFT_PX);
     }
 
-    void walkBack(long tickMS) {
-        int tx = (int) (-LOS_WALKING_SPEED_PIXELS_S * (tickMS / 1000.0F));
+    void now(long tickMs, int worldSpeed) {
+        losRect.translateX(worldSpeed);
 
-        if (tx == 0) {
-            tx = -1;
+        if (isFalling) {
+            onUpdateWhenLost();
         }
-        losRect.translateX(tx);
-        checkForAnimChange();
+        else {
+            onUpdateWhenAlive(tickMs);
+        }
     }
 
-    void walkForward(long tickMS) {
-        int tx = (int) (LOS_WALKING_SPEED_PIXELS_S * (tickMS / 1000.0F));
+    void walkForward(long tickMs) {
+        int tx = (int) (LOS_WALKING_SPEED_PX_S * (tickMs / 1000.0F));
 
         if (tx == 0) {
             tx = 1;
         }
         losRect.translateX(tx);
-        checkForAnimChange();
+        onRectChanged();
+    }
+
+    void walkBack(long tickMs) {
+        int tx = (int) (-LOS_WALKING_SPEED_PX_S * (tickMs / 1000.0F));
+
+        if (tx == 0) {
+            tx = -1;
+        }
+        losRect.translateX(tx);
+        onRectChanged();
     }
 
     void jump(int direction) {
@@ -115,19 +112,19 @@ final class LOSController {
             case JUMP_UP:
                 isJumping = true;
                 jumpSpeedX = 0;
-                jumpSpeedY = LOS_JUMPING_INITIAL_SPEED_Y_PIXELS;
+                jumpSpeedY = LOS_JUMPING_INITIAL_SPEED_Y_PX;
                 break;
 
             case JUMP_UP_LEFT:
                 isJumping = true;
-                jumpSpeedX = -LOS_JUMPING_INITIAL_SPEED_X_PIXELS;
-                jumpSpeedY = LOS_JUMPING_INITIAL_SPEED_Y_PIXELS;
+                jumpSpeedX = -LOS_JUMPING_INITIAL_SPEED_X_PX;
+                jumpSpeedY = LOS_JUMPING_INITIAL_SPEED_Y_PX;
                 break;
 
             case JUMP_UP_RIGHT:
                 isJumping = true;
-                jumpSpeedX = LOS_JUMPING_INITIAL_SPEED_X_PIXELS;
-                jumpSpeedY = LOS_JUMPING_INITIAL_SPEED_Y_PIXELS;
+                jumpSpeedX = LOS_JUMPING_INITIAL_SPEED_X_PX;
+                jumpSpeedY = LOS_JUMPING_INITIAL_SPEED_Y_PX;
                 break;
         }
     }
@@ -136,16 +133,21 @@ final class LOSController {
         isFalling = true;
     }
 
-    void now(long tickMS, int worldSpeed) {
-        losRect.translateX(worldSpeed);
-        if (isFalling) {
-            // Game lost
-            losRect.translateY(5);
-            return;
-        }
+    void reset() {
+        this.losRect = null;
+        this.groundTop = -1;
+        this.losAnimNumber = LOS_ANIM_NORMAL;
+        this.lastLOSAnim = -1L;
+        this.isJumping = false;
+        this.jumpSpeedX = 0;
+        this.jumpSpeedY = 0;
+        this.isFalling = false;
+    }
+
+    private void onUpdateWhenAlive(long tickMs) {
         if (isJumping()) {
-            int tx = (int) (jumpSpeedX * (tickMS / 1000.0F));
-            int ty = (int) (jumpSpeedY * (tickMS / 1000.0F));
+            int tx = (int) (jumpSpeedX * (tickMs / 1000.0F));
+            int ty = (int) (jumpSpeedY * (tickMs / 1000.0F));
 
             if (tx == 0 && jumpSpeedX != 0) {
                 tx = jumpSpeedX / Math.abs(jumpSpeedX);
@@ -157,7 +159,7 @@ final class LOSController {
             losRect.translateY(ty);
 
             // Speed X is constant
-            int speedYChange = (int) ((LOS_JUMPING_INITIAL_SPEED_Y_PIXELS) * (tickMS / 333.0F));
+            int speedYChange = (int) ((LOS_JUMPING_INITIAL_SPEED_Y_PX) * (tickMs / 333.0F));
 
             if (speedYChange == 0) {
                 speedYChange = -1;
@@ -173,30 +175,54 @@ final class LOSController {
         fixHorizontal();
     }
 
-    private void putOnGround(int left) {
-        losRect.set(groundTop - losRect.getHeight() - 2, left, losRect.getWidth(), losRect.getHeight());
+    private void onUpdateWhenLost() {
+        losRect.translateY(5);
     }
 
-    private void putOnGround() {
-        putOnGround(losRect.getLeft());
+    private void onRectChanged() {
+        if (checkForAnimChange()) {
+            switchLOSAnim();
+            lastLOSAnim = System.currentTimeMillis();
+        }
+    }
+
+    private boolean fixVertical() {
+        if (losRect.getBottom() > groundTop) {
+            placeOnGround();
+            return true;
+        }
+        return false;
     }
 
     private void fixHorizontal() {
         if (losRect.getLeft() < 0) {
             losRect.set(losRect.getTop(), 0, losRect.getWidth(), losRect.getHeight());
         }
-        else if (losRect.getRight() + 30 > sceneWidth) {
-            losRect
-                .set(losRect.getTop(), sceneWidth - losRect.getWidth() - 30, losRect.getWidth(), losRect.getHeight());
+        else if (losRect.getRight() + ESTIMATED_LOS_WIDTH_PADDING_PX > sceneWidth) {
+            losRect.set(
+                losRect.getTop(),
+                sceneWidth - losRect.getWidth() - ESTIMATED_LOS_WIDTH_PADDING_PX,
+                losRect.getWidth(),
+                losRect.getHeight()
+            );
         }
     }
 
-    private boolean fixVertical() {
-        if (losRect.getBottom() > groundTop) {
-            putOnGround();
-            return true;
-        }
-        return false;
+    private void placeOnGround() {
+        placeOnGround(losRect.getLeft());
+    }
+
+    private void placeOnGround(int left) {
+        losRect.set(
+            groundTop - losRect.getHeight() - 2,
+            left,
+            losRect.getWidth(),
+            losRect.getHeight()
+        );
+    }
+
+    private boolean checkForAnimChange() {
+        return System.currentTimeMillis() - lastLOSAnim >= LOS_ANIM_CHANGE_MS;
     }
 
     private void switchLOSAnim() {
@@ -212,13 +238,6 @@ final class LOSController {
             case LOS_ANIM_WALK_2:
                 losAnimNumber = LOS_ANIM_NORMAL;
                 break;
-        }
-    }
-
-    private void checkForAnimChange() {
-        if (isAnimChangeNeeded()) {
-            switchLOSAnim();
-            lastLOSAnim = System.currentTimeMillis();
         }
     }
 

@@ -17,6 +17,7 @@ import engineer.tobiasbriones.gencesk_2d_prototype_2018.models.Rect;
 
 final class WinAnimation {
 
+    private static final int LOS_SPEED = 200;
     private final MainScene ms;
     private final Rect rect;
     private final Rect losRect;
@@ -29,7 +30,8 @@ final class WinAnimation {
         this.ms = ms;
         this.rect = spacecraft.getRect();
         this.losRect = losRect;
-        this.speed = 200;
+        this.speed = LOS_SPEED;
+        this.isRunning = false;
         this.spacecraftTx = -spacecraft.getWidth();
         this.totalTx = 0;
     }
