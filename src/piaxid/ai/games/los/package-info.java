@@ -10,4 +10,7 @@
  * https://opensource.org/licenses/BSD-3-Clause.
  */
 
+/**
+ * Provides the main game construction and algorithms.
+ */
 package piaxid.ai.games.los;

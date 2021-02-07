@@ -10,4 +10,7 @@
  * https://opensource.org/licenses/BSD-3-Clause.
  */
 
+/**
+ * Provides the UI component of the game.
+ */
 package piaxid.ai.games.los.ui;
