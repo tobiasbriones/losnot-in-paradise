@@ -18,6 +18,7 @@ import engineer.tobiasbriones.gencesk_2d_prototype_2018.models.Rect;
 final class WinAnimation {
 
     private static final int LOS_SPEED = 200;
+    private static final int MAX_LENGTH_PX = 1600;
     private final MainScene ms;
     private final Rect rect;
     private final Rect losRect;
@@ -40,25 +41,30 @@ final class WinAnimation {
         return isRunning;
     }
 
-    void init(int w) {
-        rect.set(losRect.getBottom() - rect.getHeight() + 2, w - 16, rect.getWidth(), rect.getHeight());
+    void init(int width) {
+        rect.set(
+            losRect.getBottom() - rect.getHeight() + 2,
+            width - 16,
+            rect.getWidth(),
+            rect.getHeight()
+        );
     }
 
-    void start(int speed) {
-        this.speed = speed;
+    void start(int initialSpeed) {
+        this.speed = initialSpeed;
         this.isRunning = true;
     }
 
     void end() {
-        speed = 200;
+        speed = LOS_SPEED;
         isRunning = false;
     }
 
-    void now(long tickMS) {
+    void now(long tickMs) {
         if (!isRunning) {
             return;
         }
-        final int tx = (int) (speed * (tickMS / 1000.0F)) * -2;
+        final int tx = (int) (speed * (tickMs / 1000.0F)) * -2;
         totalTx += tx;
 
         if (spacecraftTx < 0) {
@@ -66,7 +72,7 @@ final class WinAnimation {
             spacecraftTx -= tx / -2;
         }
         losRect.translateX(tx);
-        if (totalTx >= 1600) {
+        if (totalTx >= MAX_LENGTH_PX) {
             ms.won();
         }
     }
