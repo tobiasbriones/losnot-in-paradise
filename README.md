@@ -17,6 +17,16 @@ obviously lost but not precisely in paradise.
 Check out the [ai branch](https://github.com/TobiasBriones/losnot-in-paradise/tree/ai) for the
 algorithm that I had in mind for this game.
 
+## Gencesk 2D
+
+Gencesk 2D is a little 2D game framework based on Swing for Desktop games I made in 2018 in order to
+create Losnot in Paradise but without using an existing framework/game engine. I leveraged the fact
+that much long ago I had learned some concepts about game frameworks, so I had a nice background
+about it and decided to undertake that project. I really don't want to reinvent the wheel with game
+frameworks, but the main consideration I have about Gencesk is to use it as a first-line framework
+for AI-for-Games research as its own name suggests it. Learn more at [Contact](#contact) / Gencesk
+2D.
+
 ## Screenshots
 
 [![Animated GIF](https://raw.githubusercontent.com/TobiasBriones/images/main/gencesk-2d/gencesk-2d-prototype-2018/lostnot-in-paradise-sample-1.gif)](https://github.com/TobiasBriones/images/tree/main/gencesk-2d)
@@ -27,6 +37,8 @@ This software: [App](https://tobiasbriones.github.io/losnot-in-paradise),
 [GitHub Repository](https://github.com/TobiasBriones/losnot-in-paradise)
 
 Tobias Briones: [GitHub](https://github.com/TobiasBriones)
+
+Gencesk 2D: [GitHub Repository](https://github.com/TobiasBriones/gencesk-2d)
 
 ## About
 
