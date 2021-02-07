@@ -21,7 +21,7 @@ import engineer.tobiasbriones.gencesk_2d_prototype_2018.models.Rect;
  *
  * @author Tobias Briones
  */
-final class LOSController {
+final class LosController {
 
     static final int LOS_ANIM_NORMAL = 0;
     static final int LOS_ANIM_WALK_1 = 1;
@@ -39,18 +39,18 @@ final class LOSController {
     private Rect losRect;
     private int groundTop;
     private int losAnimNumber;
-    private long lastLOSAnim;
+    private long lastLosAnim;
     private boolean isJumping;
     private int jumpSpeedX;
     private int jumpSpeedY;
     private boolean isFalling; // Used when Los fell off an abyss
 
-    LOSController(int sceneWidth) {
+    LosController(int sceneWidth) {
         this.sceneWidth = sceneWidth;
         reset();
     }
 
-    int getLOSAnim() {
+    int getLosAnim() {
         return losAnimNumber;
     }
 
@@ -65,7 +65,7 @@ final class LOSController {
     void initController(Bounds losBounds, int initialGroundTop) {
         this.losRect = losBounds.getRect();
         this.groundTop = initialGroundTop;
-        this.lastLOSAnim = System.currentTimeMillis();
+        this.lastLosAnim = System.currentTimeMillis();
         this.losAnimNumber = LOS_ANIM_NORMAL;
         this.jumpSpeedX = 0;
         this.jumpSpeedY = 0;
@@ -137,7 +137,7 @@ final class LOSController {
         this.losRect = null;
         this.groundTop = -1;
         this.losAnimNumber = LOS_ANIM_NORMAL;
-        this.lastLOSAnim = -1L;
+        this.lastLosAnim = -1L;
         this.isJumping = false;
         this.jumpSpeedX = 0;
         this.jumpSpeedY = 0;
@@ -181,8 +181,8 @@ final class LOSController {
 
     private void onRectChanged() {
         if (checkForAnimChange()) {
-            switchLOSAnim();
-            lastLOSAnim = System.currentTimeMillis();
+            switchLosAnim();
+            lastLosAnim = System.currentTimeMillis();
         }
     }
 
@@ -222,10 +222,10 @@ final class LOSController {
     }
 
     private boolean checkForAnimChange() {
-        return System.currentTimeMillis() - lastLOSAnim >= LOS_ANIM_CHANGE_MS;
+        return System.currentTimeMillis() - lastLosAnim >= LOS_ANIM_CHANGE_MS;
     }
 
-    private void switchLOSAnim() {
+    private void switchLosAnim() {
         switch (losAnimNumber) {
             case LOS_ANIM_NORMAL:
                 losAnimNumber = LOS_ANIM_WALK_1;

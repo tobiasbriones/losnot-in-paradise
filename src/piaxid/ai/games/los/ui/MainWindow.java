@@ -12,7 +12,7 @@
 
 package piaxid.ai.games.los.ui;
 
-import piaxid.ai.games.los.LOSGame;
+import piaxid.ai.games.los.LosGame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +33,7 @@ public final class MainWindow extends JFrame {
     }
 
     public void createUI() {
-        setPreferredSize(new Dimension(LOSGame.gameSize.getWidth(), LOSGame.gameSize.getHeight()));
+        setPreferredSize(new Dimension(LosGame.gameSize.getWidth(), LosGame.gameSize.getHeight()));
         setIconImage(Toolkit.getDefaultToolkit().getImage(ICON_PATH));
         pack();
         setLocationRelativeTo(null);

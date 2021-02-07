@@ -24,7 +24,7 @@ public final class Main {
 
     private static void run() {
         final var mw = new MainWindow();
-        final var game = new LOSGame();
+        final var game = new LosGame();
 
         game.run();
         game.displayOn(mw.getOutputContainer());

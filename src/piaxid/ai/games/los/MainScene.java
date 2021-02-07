@@ -71,7 +71,7 @@ final class MainScene extends Scene {
     private final LinkedList<Obstacle.Object> obstacles;
     private final List<Obstacle> visibleObstacles;
     private final KeyEventHandler keyHandler;
-    private final LOSController losController;
+    private final LosController losController;
     private final WinAnimation victory;
     private final int offY;
     private final boolean drawObjectFrame;
@@ -84,7 +84,7 @@ final class MainScene extends Scene {
     private long fpsCountLastUpdate;
     private volatile boolean gameLost;
 
-    MainScene(LOSGame game) throws IOException, LineUnavailableException, UnsupportedAudioFileException {
+    MainScene(LosGame game) throws IOException, LineUnavailableException, UnsupportedAudioFileException {
         super(game);
         this.size = game.getGameConfig().getResolution();
         this.background = Bitmap.createBitmap(new File("assets/background.png"));
@@ -116,7 +116,7 @@ final class MainScene extends Scene {
         this.obstacles = new LinkedList<>();
         this.visibleObstacles = new LinkedList<>();
         this.keyHandler = game.getKeyHandler();
-        this.losController = new LOSController(size.getWidth());
+        this.losController = new LosController(size.getWidth());
         this.victory = new WinAnimation(this, spacecraft, los.getRect());
         this.offY = 30;
         this.cameraSpeed = WORLD_INITIAL_SPEED_X_PIXELS_PER_SECOND;
@@ -172,21 +172,21 @@ final class MainScene extends Scene {
                     if (!losController.isJumping() && !losController.isFalling()) {
                         jumpSound.play();
                     }
-                    losController.jump(LOSController.JUMP_UP);
+                    losController.jump(LosController.JUMP_UP);
                     break;
 
                 case 'q':
                     if (!losController.isJumping()) {
                         jumpSound.play();
                     }
-                    losController.jump(LOSController.JUMP_UP_LEFT);
+                    losController.jump(LosController.JUMP_UP_LEFT);
                     break;
 
                 case 'e':
                     if (!losController.isJumping()) {
                         jumpSound.play();
                     }
-                    losController.jump(LOSController.JUMP_UP_RIGHT);
+                    losController.jump(LosController.JUMP_UP_RIGHT);
                     break;
             }
         });
@@ -299,17 +299,17 @@ final class MainScene extends Scene {
         }
 
         // Los
-        switch (losController.getLOSAnim()) {
-            case LOSController.LOS_ANIM_NORMAL:
+        switch (losController.getLosAnim()) {
+            case LosController.LOS_ANIM_NORMAL:
                 los.draw(graphics2D);
                 break;
 
-            case LOSController.LOS_ANIM_WALK_1:
+            case LosController.LOS_ANIM_WALK_1:
                 losWalk1.getRect().set(los.getRect().getTop(), los.getRect().getLeft());
                 losWalk1.draw(graphics2D);
                 break;
 
-            case LOSController.LOS_ANIM_WALK_2:
+            case LosController.LOS_ANIM_WALK_2:
                 losWalk2.getRect().set(los.getRect().getTop(), los.getRect().getLeft());
                 losWalk2.draw(graphics2D);
                 break;

@@ -27,7 +27,7 @@ import javax.swing.*;
  *
  * @author Tobias Briones
  */
-public final class LOSGame extends Game {
+public final class LosGame extends Game {
 
     private static final int GAME_FPS = 60;
     public static final Dimension2D gameSize = new Dimension2D(960, 540);
@@ -35,7 +35,7 @@ public final class LOSGame extends Game {
     private KeyEventHandler keyHandler;
     private Scene currentScene;
 
-    public LOSGame() {
+    public LosGame() {
         super();
         this.gameConfig = new GameConfig();
         this.keyHandler = null;
