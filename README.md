@@ -2,7 +2,7 @@
 
 [![GitHub Repository](https://img.shields.io/static/v1?label=GITHUB&message=REPOSITORY&labelColor=555&color=0277bd&style=for-the-badge&logo=GITHUB)](https://github.com/TobiasBriones/losnot-in-paradise)
 
-[![GitHub Project License](https://img.shields.io/github/license/TobiasBriones/losnot-in-paradise.svg?style=flat-square)](https://github.com/TobiasBriones/losnot-in-paradise/blob/main/LICENSE)
+[![GitHub Project License](https://img.shields.io/github/license/tobiasbriones/losnot-in-paradise.svg?style=flat-square)](https://github.com/tobiasbriones/losnot-in-paradise/blob/main/LICENSE)
 
 Losnot in paradise is a 2D video game made in Java where the main character --Los-- is located in a
 strange world full of obstacles, and his mission is to get out of that place alive.
@@ -29,14 +29,14 @@ for AI-for-Games research as its own name suggests it. Learn more at [Contact](#
 
 ## Screenshots
 
-[![Animated GIF](https://raw.githubusercontent.com/TobiasBriones/images/main/gencesk-2d/gencesk-2d-prototype-2018/lostnot-in-paradise-sample-1.gif)](https://github.com/TobiasBriones/images/tree/main/gencesk-2d)
+[![Animated GIF](https://raw.githubusercontent.com/tobiasbriones/images/main/gencesk-2d/gencesk-2d-prototype-2018/lostnot-in-paradise-sample-1.gif)](https://github.com/tobiasbriones/images/tree/main/gencesk-2d)
 
 ## Contact
 
 This software: [App](https://tobiasbriones.github.io/losnot-in-paradise),
 [GitHub Repository](https://github.com/TobiasBriones/losnot-in-paradise)
 
-Tobias Briones: [GitHub](https://github.com/TobiasBriones)
+Tobias Briones: [GitHub](https://github.com/tobiasbriones)
 
 Gencesk 2D: [GitHub Repository](https://github.com/TobiasBriones/gencesk-2d)
 
@@ -51,9 +51,9 @@ Copyright © 2018-2021 Tobias Briones. All rights reserved.
 
 ### License
 
-This software is licensed under the [BSD-3-Clause License](./LICENSE).
+This project is licensed under the [BSD-3-Clause License](LICENSE).
 
 ---
 
-This project includes sounds from https://freesound.org/, see the
-[NOTICE](./NOTICE) file for more details. 
+This project includes sounds from [freesound.org](https://freesound.org/), see the
+[NOTICE](NOTICE) file for more details. 
