@@ -1,8 +1,8 @@
 # Losnot in Paradise
 
-[![GitHub Repository](https://raw.githubusercontent.com/TobiasBriones/general-images/main/example-projects/badges/ep-gh-repo-badge.svg)](https://github.com/TobiasBriones/losnot-in-paradise)
+[![GitHub Repository](https://img.shields.io/static/v1?label=GITHUB&message=REPOSITORY&labelColor=555&color=0277bd&style=for-the-badge&logo=GITHUB)](https://github.com/TobiasBriones/losnot-in-paradise)
 
-[![Project GitHub License](https://img.shields.io/github/license/TobiasBriones/losnot-in-paradise.svg?style=flat-square)](https://github.com/TobiasBriones/losnot-in-paradise/blob/main/LICENSE)
+[![GitHub Project License](https://img.shields.io/github/license/TobiasBriones/losnot-in-paradise.svg?style=flat-square)](https://github.com/TobiasBriones/losnot-in-paradise/blob/main/LICENSE)
 
 Losnot in paradise is a 2D video game made in Java where the main character --Los-- is located in a
 strange world full of obstacles, and his mission is to get out of that place alive.
